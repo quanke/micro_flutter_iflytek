@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="pref_key_translate">translate</string>
+    <string name="text_begin_recognizer">开始音频流识别</string>
+
+</resources>
