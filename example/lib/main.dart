@@ -27,12 +27,12 @@ class _MyAppState extends State<Home> {
   void initState() {
     super.initState();
 
-    _iflytek.onBeginOfSpeech().listen(_onBeginOfSpeech);
-    _iflytek.onInit().listen(_onInit);
-    _iflytek.onResult().listen(_onResult);
-
-    _iflytek.onVolumeChanged
-        .listen(_onVolumeChanged, onDone: _onVolumeChangedDone);
+//    _iflytek.onBeginOfSpeech().listen(_onBeginOfSpeech);
+//    _iflytek.onInit().listen(_onInit);
+//    _iflytek.onResult().listen(_onResult);
+//
+//    _iflytek.onVolumeChanged
+//        .listen(_onVolumeChanged, onDone: _onVolumeChangedDone);
 
     initPlatformState();
   }
@@ -71,7 +71,7 @@ class _MyAppState extends State<Home> {
 
   @override
   void dispose() {
-    _iflytek.dispose();
+//    _iflytek.dispose();
     super.dispose();
   }
 
@@ -79,7 +79,7 @@ class _MyAppState extends State<Home> {
     try {
       print("_beginIatRecognize");
 
-      _iflytek.recognizer(cyclic: true);
+//      _iflytek.recognizer(cyclic: true);
     } on PlatformException {}
   }
 
@@ -87,7 +87,7 @@ class _MyAppState extends State<Home> {
     try {
       print("_stopIatRecognize");
 
-      _iflytek.stopRecognizer();
+//      _iflytek.stopRecognizer();
     } on PlatformException {}
   }
 

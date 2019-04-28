@@ -1,0 +1,28 @@
+PODS:
+  - Flutter (1.0.0)
+  - micro_flutter_iflytek (0.0.1):
+    - Flutter
+  - permission_handler (2.2.0):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - micro_flutter_iflytek (from `.symlinks/plugins/micro_flutter_iflytek/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  micro_flutter_iflytek:
+    :path: ".symlinks/plugins/micro_flutter_iflytek/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
+  micro_flutter_iflytek: 729cf9e2889c06ae40a74e0a58f2c699aa9c6c41
+  permission_handler: 0b2a5acb642be1ad2406adc31d0cda567b8b01e2
+
+PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
+
+COCOAPODS: 1.5.3
