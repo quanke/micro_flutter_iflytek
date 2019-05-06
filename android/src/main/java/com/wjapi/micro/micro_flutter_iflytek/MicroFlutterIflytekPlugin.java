@@ -187,7 +187,7 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
         @Override
         public void onError(SpeechError error) {
 
-            Map<String, Object> result = new HashMap();
+            Map<String, Object> result = new HashMap<>();
             result.put("errorDescription", error.getErrorDescription());
             result.put("errorCode", error.getErrorCode());
             channel.invokeMethod(METHOD_ON_ERROR, result);
@@ -220,12 +220,16 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            if (sn == null) {
+                return;
+            }
             Map<String, Object> result = new HashMap<>();
 //            result.put("results", results.getResultString());
-
+            Map<String, Object> snMap = new HashMap<>();
             result.put("isLast", isLast);
-            result.put("ws", text);
-            result.put("sn", sn);
+            snMap.put(sn, text);
+            result.put("ws", snMap);
 
             channel.invokeMethod(METHOD_ON_RESULT, result);
 
@@ -242,7 +246,7 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
         @Override
         public void onVolumeChanged(int volume, byte[] data) {
 
-            Map<String, Object> result = new HashMap();
+            Map<String, Object> result = new HashMap<>();
             result.put("volume", String.valueOf(volume));
             result.put("data", data);
 
@@ -324,10 +328,8 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
 
     /**
      * 参数设置
-     *
-     * @return
      */
-    public void setParam(Map<String, String> param) {
+    private void setParam(Map<String, String> param) {
 
         // 清空参数
         mIat.setParameter(SpeechConstant.PARAMS, null);
