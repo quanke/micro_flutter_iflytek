@@ -18,6 +18,10 @@ import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +47,6 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
     // 引擎类型
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
 
-
     private String resultType = "json";
 
     private boolean cyclic = false;//音频流识别是否循环调用
@@ -54,20 +57,10 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
 
     private StringBuffer buffer = new StringBuffer();
 
-    public static final String PREFER_NAME = "com.iflytek.setting";
+    private static final String PREFER_NAME = "com.iflytek.setting";
 
+    private Handler han = new MyHandler(this);
 
-    Handler han = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 0x001) {
-                mIat.startListening(mRecognizerListener);
-
-            }
-        }
-    };
 
     /**
      * 跳转到科大讯飞语音识别页面
@@ -122,9 +115,13 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
         channel.setMethodCallHandler(new MicroFlutterIflytekPlugin(registrar, channel));
     }
 
+    private void iatStartListening() {
+        mIat.startListening(mRecognizerListener);
+
+    }
+
     @Override
     public void onMethodCall(MethodCall call, Result result) {
-
         //跳转到科大讯飞语音识别页面
         if (METHOD_RECOGNIZER.equals(call.method)) {
 
@@ -213,9 +210,22 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
 
         @Override
         public void onResult(RecognizerResult results, boolean isLast) {
-            Map<String, Object> result = new HashMap();
-            result.put("results", results.getResultString());
+            String text = JsonParser.parseIatResult(results.getResultString());
+
+            String sn = null;
+            // 读取json结果中的sn字段
+            try {
+                JSONObject resultJson = new JSONObject(results.getResultString());
+                sn = resultJson.optString("sn");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Map<String, Object> result = new HashMap<>();
+//            result.put("results", results.getResultString());
+
             result.put("isLast", isLast);
+            result.put("ws", text);
+            result.put("sn", sn);
 
             channel.invokeMethod(METHOD_ON_RESULT, result);
 
@@ -294,7 +304,7 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
     private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
         public void onResult(RecognizerResult results, boolean isLast) {
 
-            Map<String, Object> result = new HashMap();
+            Map<String, Object> result = new HashMap<>();
             result.put("results", results.getResultString());
             result.put("isLast", isLast);
 
@@ -306,7 +316,7 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
          * 识别回调错误.
          */
         public void onError(SpeechError error) {
-            Map<String, Object> result = new HashMap();
+            Map<String, Object> result = new HashMap<>();
             result.put("error", error);
             channel.invokeMethod(METHOD_ON_ERROR_DIALOG, result);
         }
@@ -344,4 +354,26 @@ public class MicroFlutterIflytekPlugin implements MethodCallHandler {
         mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory() + "/msc/iat.wav");
     }
 
+    static class MyHandler extends Handler {
+        // WeakReference to the outer class's instance.
+        private WeakReference<MicroFlutterIflytekPlugin> plugin;
+
+        MyHandler(MicroFlutterIflytekPlugin plugin) {
+            this.plugin = new WeakReference<>(plugin);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            MicroFlutterIflytekPlugin outer = plugin.get();
+            if (plugin != null) {
+                // Do something with outer as your wish.
+                if (msg.what == 0x001) {
+                    outer.iatStartListening();
+                }
+            }
+
+        }
+    }
 }
