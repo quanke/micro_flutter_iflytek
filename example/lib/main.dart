@@ -31,8 +31,8 @@ class _MyAppState extends State<Home> {
     _iflytek.onInit().listen(_onInit);
     _iflytek.onResult().listen(_onResult);
 //
-//    _iflytek.onVolumeChanged
-//        .listen(_onVolumeChanged, onDone: _onVolumeChangedDone);
+    _iflytek.onVolumeChanged
+        .listen(_onVolumeChanged, onDone: _onVolumeChangedDone);
 
     initPlatformState();
   }
@@ -46,11 +46,11 @@ class _MyAppState extends State<Home> {
   }
 
   void _onVolumeChanged(resp) {
-//    print("_onVolumeChanged--------------- ${resp}");
+    print("_onVolumeChanged--------------- ${resp}");
   }
 
   void _onVolumeChangedDone() {
-//    print("_onVolumeChangedDone---------------");
+    print("_onVolumeChangedDone---------------");
   }
 
   void _onBeginOfSpeech(resp) {
